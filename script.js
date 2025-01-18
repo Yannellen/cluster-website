@@ -12,12 +12,13 @@ const mouse = {
 
 const clusterText = document.getElementById('clusterText');
 
+// Adjust for touch events
 canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Уникає прокрутки сторінки
+    e.preventDefault(); // Уникає небажаного скролінгу
     const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = (touch.clientX - rect.left) * (canvas.width / rect.width);
-    mouse.y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    const rect = canvas.getBoundingClientRect(); // Для точного позиціювання
+    mouse.x = touch.clientX - rect.left;
+    mouse.y = touch.clientY - rect.top;
 });
 
 canvas.addEventListener('mousemove', (event) => {
