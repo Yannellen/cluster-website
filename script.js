@@ -12,17 +12,16 @@ const mouse = {
 
 const clusterText = document.getElementById('clusterText');
 
-// Detect mouse move
-window.addEventListener('mousemove', (event) => {
-    mouse.x = event.x;
-    mouse.y = event.y;
-});
-
-// Detect touch move for mobile devices
+// Adjust for touch events
 canvas.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
     mouse.x = touch.clientX;
     mouse.y = touch.clientY;
+});
+
+canvas.addEventListener('mousemove', (event) => {
+    mouse.x = event.x;
+    mouse.y = event.y;
 });
 
 let allCollected = false;
@@ -47,11 +46,9 @@ class Particle {
     }
 
     update() {
-        // Float effect
         this.floatAngle += 0.02;
         this.y += Math.sin(this.floatAngle) * 0.5;
 
-        // Interaction with mouse or touch
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -68,6 +65,16 @@ class Particle {
         } else {
             this.x += (this.baseX - this.x) * 0.05;
             this.y += (this.baseY - this.y) * 0.05;
+        }
+
+        // Ensure particles stay within canvas bounds
+        if (this.x - this.size < 0 || this.x + this.size > canvas.width) {
+            this.baseX = Math.random() * canvas.width;
+            this.x = this.baseX;
+        }
+        if (this.y - this.size < 0 || this.y + this.size > canvas.height) {
+            this.baseY = Math.random() * canvas.height;
+            this.y = this.baseY;
         }
     }
 }

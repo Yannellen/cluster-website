@@ -17,7 +17,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 48px;
+    font-size: 72px; /* Increased font size */
     font-weight: bold;
     text-transform: uppercase;
     color: white;
@@ -40,11 +40,11 @@ canvas {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 20px;
+    font-size: 28px; /* Increased font size */
     color: white;
     text-align: center;
     background: rgba(0, 0, 0, 0.6);
-    padding: 20px;
+    padding: 30px; /* Adjusted padding */
     border-radius: 10px;
     display: none;
     z-index: 3;
@@ -53,11 +53,11 @@ canvas {
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
     .center-text {
-        font-size: 24px;
+        font-size: 36px; /* Adjusted for smaller screens */
     }
 
     .notification {
-        font-size: 16px;
-        padding: 10px;
+        font-size: 20px; /* Adjusted for smaller screens */
+        padding: 15px;
     }
 }
