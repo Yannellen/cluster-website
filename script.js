@@ -5,8 +5,8 @@ canvas.height = window.innerHeight;
 
 const particles = [];
 const mouse = {
-    x: null,
-    y: null,
+    x: canvas.width / 2, // Центрування при відкритті
+    y: canvas.height / 2,
     radius: 100
 };
 
@@ -15,13 +15,15 @@ const clusterText = document.getElementById('clusterText');
 // Adjust for touch events
 canvas.addEventListener('touchmove', (e) => {
     const touch = e.touches[0];
-    mouse.x = touch.clientX;
-    mouse.y = touch.clientY;
+    const rect = canvas.getBoundingClientRect(); // Для точного позиціювання
+    mouse.x = touch.clientX - rect.left;
+    mouse.y = touch.clientY - rect.top;
 });
 
 canvas.addEventListener('mousemove', (event) => {
-    mouse.x = event.x;
-    mouse.y = event.y;
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
 });
 
 let allCollected = false;
@@ -68,14 +70,10 @@ class Particle {
         }
 
         // Ensure particles stay within canvas bounds
-        if (this.x - this.size < 0 || this.x + this.size > canvas.width) {
-            this.baseX = Math.random() * canvas.width;
-            this.x = this.baseX;
-        }
-        if (this.y - this.size < 0 || this.y + this.size > canvas.height) {
-            this.baseY = Math.random() * canvas.height;
-            this.y = this.baseY;
-        }
+        if (this.x - this.size < 0) this.x = this.size;
+        if (this.x + this.size > canvas.width) this.x = canvas.width - this.size;
+        if (this.y - this.size < 0) this.y = this.size;
+        if (this.y + this.size > canvas.height) this.y = canvas.height - this.size;
     }
 }
 
@@ -85,8 +83,8 @@ function initParticles() {
 
     for (let i = 0; i < numberOfParticles; i++) {
         const size = 4;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const x = Math.random() * (canvas.width - 20) + 10; // Додано відступи
+        const y = Math.random() * (canvas.height - 20) + 10;
         particles.push(new Particle(x, y, size));
     }
 }
@@ -135,7 +133,7 @@ function showCompletionMessage() {
     messageDiv.style.transform = 'translate(-50%, -50%)';
     messageDiv.style.color = '#ffffff';
     messageDiv.style.fontFamily = 'Arial, sans-serif';
-    messageDiv.style.fontSize = '1.5rem';
+    messageDiv.style.fontSize = '2rem';
     messageDiv.style.textAlign = 'center';
     messageDiv.style.pointerEvents = 'none';
 
