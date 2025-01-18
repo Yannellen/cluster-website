@@ -44,6 +44,15 @@ canvas.addEventListener('mousemove', (event) => {
     mouse.y = event.clientY - rect.top;
 });
 
+canvas.addEventListener('touchend', () => {
+    mouse.x = -100; // Скидаємо координати миші за межі екрану
+    mouse.y = -100;
+    mouse.y = -100;
+});
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
+
 let allCollected = false;
 
 class Particle {
@@ -129,13 +138,23 @@ function connectParticles() {
 
 function checkAllCollected() {
     allCollected = particles.every(particle => particle.collected);
+
+    if (allCollected) {
+        showCompletionMessage();
+        particles.forEach(particle => {
+            particle.collected = false; // Скидаємо стан точок // Скидаємо стан точки
+            particle.update(); // Переміщуємо їх назад
+        });
+    }
+}
+    allCollected = particles.every(particle => particle.collected);
     if (allCollected) {
         showCompletionMessage();
         particles.forEach(particle => particle.collected = false);
     }
-}
 
 function showCompletionMessage() {
+    if (document.querySelector('.completion-message')) return; // Уникаємо дублювання повідомлень // Уникаємо повторного створення
     if (clusterText) {
         clusterText.style.display = 'none';
     }
