@@ -12,9 +12,17 @@ const mouse = {
 
 const clusterText = document.getElementById('clusterText');
 
+// Detect mouse move
 window.addEventListener('mousemove', (event) => {
     mouse.x = event.x;
     mouse.y = event.y;
+});
+
+// Detect touch move for mobile devices
+canvas.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    mouse.x = touch.clientX;
+    mouse.y = touch.clientY;
 });
 
 let allCollected = false;
@@ -39,9 +47,11 @@ class Particle {
     }
 
     update() {
+        // Float effect
         this.floatAngle += 0.02;
         this.y += Math.sin(this.floatAngle) * 0.5;
 
+        // Interaction with mouse or touch
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
