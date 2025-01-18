@@ -1,7 +1,24 @@
 const canvas = document.getElementById('background');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas() {
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * pixelRatio;
+    canvas.height = window.innerHeight * pixelRatio;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    ctx.scale(pixelRatio, pixelRatio);
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const pixelRatio = window.devicePixelRatio || 1;
+canvas.width = window.innerWidth * pixelRatio;
+canvas.height = window.innerHeight * pixelRatio;
+canvas.style.width = `${window.innerWidth}px`;
+canvas.style.height = `${window.innerHeight}px`;
+ctx.scale(pixelRatio, pixelRatio);
+
 
 const particles = [];
 const mouse = {
@@ -158,8 +175,25 @@ function animate() {
 }
 
 window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    function resizeCanvas() {
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * pixelRatio;
+    canvas.height = window.innerHeight * pixelRatio;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    ctx.scale(pixelRatio, pixelRatio);
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const pixelRatio = window.devicePixelRatio || 1;
+canvas.width = window.innerWidth * pixelRatio;
+canvas.height = window.innerHeight * pixelRatio;
+canvas.style.width = `${window.innerWidth}px`;
+canvas.style.height = `${window.innerHeight}px`;
+ctx.scale(pixelRatio, pixelRatio);
+    
     initParticles();
 });
 
