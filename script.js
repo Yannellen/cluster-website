@@ -5,8 +5,8 @@ canvas.height = window.innerHeight;
 
 const particles = [];
 const mouse = {
-    x: canvas.width / 2, // Центрування при відкритті
-    y: canvas.height / 2,
+    x: -100, // Позамежне значення
+    y: -100,
     radius: 100
 };
 
@@ -14,6 +14,7 @@ const clusterText = document.getElementById('clusterText');
 
 // Adjust for touch events
 canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault(); // Уникає небажаного скролінгу
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect(); // Для точного позиціювання
     mouse.x = touch.clientX - rect.left;
@@ -49,7 +50,7 @@ class Particle {
 
     update() {
         this.floatAngle += 0.02;
-        this.y += Math.sin(this.floatAngle) * 0.5;
+        this.y += Math.sin(this.floatAngle) * 0.2; // Зменшено амплітуду
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
