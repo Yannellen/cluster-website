@@ -15,7 +15,7 @@ function initParticles() {
 
     for (let i = 0; i < numberOfParticles; i++) {
         const size = 4;
-        const x = Math.random() * (canvas.width - size * 2) + size; 
+        const x = Math.random() * (canvas.width - size * 2) + size;
         const y = Math.random() * (canvas.height - size * 2) + size;
         particles.push(new Particle(x, y, size));
     }
@@ -23,11 +23,11 @@ function initParticles() {
 
 function resizeCanvas() {
     const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(window.innerWidth * pixelRatio);
+    canvas.height = Math.floor(window.innerHeight * pixelRatio);
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     initParticles();
 }
 
@@ -113,7 +113,6 @@ function showCompletionMessage() {
     const existingMessage = document.querySelector('.completion-message');
     if (existingMessage) return;
 
-    // Приховуємо надпис "Cluster", якщо він існує
     if (clusterText) {
         clusterText.style.visibility = 'hidden';
     }
@@ -136,7 +135,6 @@ function showCompletionMessage() {
     setTimeout(() => {
         document.body.removeChild(messageDiv);
 
-        // Повертаємо видимість "Cluster", якщо потрібно
         if (clusterText) {
             clusterText.style.visibility = 'visible';
         }
@@ -164,8 +162,8 @@ canvas.addEventListener('touchmove', e => {
     e.preventDefault();
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    mouse.x = touch.clientX - rect.left;
-    mouse.y = touch.clientY - rect.top;
+    mouse.x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    mouse.y = (touch.clientY - rect.top) * (canvas.height / rect.height);
 });
 
 canvas.addEventListener('touchend', () => {
