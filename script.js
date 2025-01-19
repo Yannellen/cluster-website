@@ -11,13 +11,16 @@ const clusterText = document.getElementById('clusterText');
 
 function initParticles() {
     particles.length = 0;
-    const numberOfParticles = (canvas.width * canvas.height) / 4000;
+    if (canvas.width > 0 && canvas.height > 0) {
+        const numberOfParticles = Math.floor((canvas.width * canvas.height) / 4000);
+        console.log(`Number of particles: ${numberOfParticles}`); // Debugging кількості частинок
 
-    for (let i = 0; i < numberOfParticles; i++) {
-        const size = 4;
-        const x = Math.random() * (canvas.width - size * 2) + size;
-        const y = Math.random() * (canvas.height - size * 2) + size;
-        particles.push(new Particle(x, y, size));
+        for (let i = 0; i < numberOfParticles; i++) {
+            const size = 4;
+            const x = Math.random() * (canvas.width - size * 2) + size;
+            const y = Math.random() * (canvas.height - size * 2) + size;
+            particles.push(new Particle(x, y, size));
+        }
     }
 }
 
@@ -28,6 +31,8 @@ function resizeCanvas() {
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+    console.log(`Canvas resized: ${canvas.width}x${canvas.height}`); // Debugging розмірів canvas
     initParticles();
 }
 
