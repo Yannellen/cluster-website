@@ -1,59 +1,35 @@
+
 const canvas = document.getElementById('background');
 const ctx = canvas.getContext('2d');
-function resizeCanvas() {
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * pixelRatio;
-    canvas.height = window.innerHeight * pixelRatio;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-    ctx.scale(pixelRatio, pixelRatio);
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-const pixelRatio = window.devicePixelRatio || 1;
-canvas.width = window.innerWidth * pixelRatio;
-canvas.height = window.innerHeight * pixelRatio;
-canvas.style.width = `${window.innerWidth}px`;
-canvas.style.height = `${window.innerHeight}px`;
-ctx.scale(pixelRatio, pixelRatio);
-
-
 const particles = [];
 const mouse = {
-    x: -100, // Позамежне значення
+    x: -100,
     y: -100,
     radius: 100
 };
-
 const clusterText = document.getElementById('clusterText');
 
-// Adjust for touch events
-canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault(); // Уникає небажаного скролінгу
-    const touch = e.touches[0];
-    const rect = canvas.getBoundingClientRect(); // Для точного позиціювання
-    mouse.x = touch.clientX - rect.left;
-    mouse.y = touch.clientY - rect.top;
-});
+function initParticles() {
+    particles.length = 0;
+    const numberOfParticles = (canvas.width * canvas.height) / 4000;
 
-canvas.addEventListener('mousemove', (event) => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = event.clientX - rect.left;
-    mouse.y = event.clientY - rect.top;
-});
+    for (let i = 0; i < numberOfParticles; i++) {
+        const size = 4;
+        const x = Math.random() * (canvas.width - size * 2) + size; 
+        const y = Math.random() * (canvas.height - size * 2) + size;
+        particles.push(new Particle(x, y, size));
+    }
+}
 
-canvas.addEventListener('touchend', () => {
-    mouse.x = -100; // Скидаємо координати миші за межі екрану
-    mouse.y = -100;
-    mouse.y = -100;
-});
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = event.clientX - rect.left;
-    mouse.y = event.clientY - rect.top;
-
-let allCollected = false;
+function resizeCanvas() {
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+    initParticles();
+}
 
 class Particle {
     constructor(x, y, size) {
@@ -76,7 +52,7 @@ class Particle {
 
     update() {
         this.floatAngle += 0.02;
-        this.y += Math.sin(this.floatAngle) * 0.2; // Зменшено амплітуду
+        this.y += Math.sin(this.floatAngle) * 0.2;
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
@@ -96,23 +72,10 @@ class Particle {
             this.y += (this.baseY - this.y) * 0.05;
         }
 
-        // Ensure particles stay within canvas bounds
         if (this.x - this.size < 0) this.x = this.size;
         if (this.x + this.size > canvas.width) this.x = canvas.width - this.size;
         if (this.y - this.size < 0) this.y = this.size;
         if (this.y + this.size > canvas.height) this.y = canvas.height - this.size;
-    }
-}
-
-function initParticles() {
-    particles.length = 0;
-    const numberOfParticles = (canvas.width * canvas.height) / 4000;
-
-    for (let i = 0; i < numberOfParticles; i++) {
-        const size = 4;
-        const x = Math.random() * (canvas.width - 20) + 10; // Додано відступи
-        const y = Math.random() * (canvas.height - 20) + 10;
-        particles.push(new Particle(x, y, size));
     }
 }
 
@@ -137,26 +100,22 @@ function connectParticles() {
 }
 
 function checkAllCollected() {
-    allCollected = particles.every(particle => particle.collected);
-
+    const allCollected = particles.every(particle => particle.collected);
     if (allCollected) {
         showCompletionMessage();
         particles.forEach(particle => {
-            particle.collected = false; // Скидаємо стан точок // Скидаємо стан точки
-            particle.update(); // Переміщуємо їх назад
+            particle.collected = false;
         });
     }
 }
-    allCollected = particles.every(particle => particle.collected);
-    if (allCollected) {
-        showCompletionMessage();
-        particles.forEach(particle => particle.collected = false);
-    }
 
 function showCompletionMessage() {
-    if (document.querySelector('.completion-message')) return; // Уникаємо дублювання повідомлень // Уникаємо повторного створення
+    const existingMessage = document.querySelector('.completion-message');
+    if (existingMessage) return;
+
+    // Приховуємо надпис "Cluster", якщо він існує
     if (clusterText) {
-        clusterText.style.display = 'none';
+        clusterText.style.visibility = 'hidden';
     }
 
     const messageDiv = document.createElement('div');
@@ -176,15 +135,17 @@ function showCompletionMessage() {
 
     setTimeout(() => {
         document.body.removeChild(messageDiv);
+
+        // Повертаємо видимість "Cluster", якщо потрібно
         if (clusterText) {
-            clusterText.style.display = 'block';
+            clusterText.style.visibility = 'visible';
         }
     }, 5000);
 }
 
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach((particle) => {
+    particles.forEach(particle => {
         particle.update();
         particle.draw();
     });
@@ -193,28 +154,25 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', () => {
-    function resizeCanvas() {
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * pixelRatio;
-    canvas.height = window.innerHeight * pixelRatio;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-    ctx.scale(pixelRatio, pixelRatio);
-}
+canvas.addEventListener('mousemove', event => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
+});
+
+canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = touch.clientX - rect.left;
+    mouse.y = touch.clientY - rect.top;
+});
+
+canvas.addEventListener('touchend', () => {
+    mouse.x = -100;
+    mouse.y = -100;
+});
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
-
-const pixelRatio = window.devicePixelRatio || 1;
-canvas.width = window.innerWidth * pixelRatio;
-canvas.height = window.innerHeight * pixelRatio;
-canvas.style.width = `${window.innerWidth}px`;
-canvas.style.height = `${window.innerHeight}px`;
-ctx.scale(pixelRatio, pixelRatio);
-    
-    initParticles();
-});
-
-initParticles();
 animate();
